@@ -17,10 +17,6 @@ A full-featured Student Management System built with Laravel.
 - Bootstrap 5 (for front-end UI)
 - MySQL (or SQLite) for the database
 
-## 📸 Screenshots
-
-*(Add screenshots of your web app here if you'd like)*
-
 ## ⚙️ Setup Instructions
 
 1. Clone the repository  
