@@ -2,86 +2,95 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Student;
 use Illuminate\Http\Request;
+use App\Models\Student;
 
 class StudentController extends Controller
 {
-    // Display a paginated list of students with search
-    public function index(Request $request)
+    // Check if user is logged in
+    private function checkAuth()
     {
-        $query = Student::query();
-
-        if ($request->filled('search')) {
-            $search = $request->search;
-            $query->where('roll_number', 'like', "%$search%")
-                  ->orWhere('name', 'like', "%$search%")
-                  ->orWhere('email', 'like', "%$search%");
+        if (!session('logged_in')) {
+            return redirect('/login');
         }
-
-        $students = $query->orderBy('roll_number')->paginate(10);
-
-        return view('students.index', compact('students'));
+        return null;
     }
 
-    // Show the form to create a new student
+    public function index()
+    {
+        //if ($redirect = $this->checkAuth()) return $redirect;
+
+       // $students = Student::all();
+       if ($redirect = $this->checkAuth()) return $redirect;
+
+        $students = Student::paginate(10);
+
+        return view('students.index', compact('students'));
+       
+    
+    }
+    public function show($id)
+    {
+        $student = Student::findOrFail($id);
+        return view('students.show', compact('student'));
+    }
+    
     public function create()
     {
+        if ($redirect = $this->checkAuth()) return $redirect;
+
         return view('students.create');
     }
 
-    // Store a new student
     public function store(Request $request)
     {
+        if ($redirect = $this->checkAuth()) return $redirect;
+
         $request->validate([
-            'roll_number' => 'required|unique:students',
-            'name'        => 'required',
-            'email'       => 'nullable|email',
-            'age'         => 'required|integer|min:3|max:100',
-            'bengali'     => 'required|integer|min:0|max:100',
-            'english'     => 'required|integer|min:0|max:100',
-            'math'        => 'required|integer|min:0|max:100',
+            'name' => 'required',
+            'email' => 'required|email',
+            'phone' => 'required',
         ]);
 
         Student::create($request->all());
 
-        return redirect()->route('students.index')->with('success', 'Student added successfully.');
+        return redirect('/students')->with('success', 'Student created successfully.');
     }
 
-    // Show a single student
-    public function show(Student $student)
+    public function edit($id)
     {
-        return view('students.show', compact('student'));
-    }
+        if ($redirect = $this->checkAuth()) return $redirect;
 
-    // Show the form to edit a student
-    public function edit(Student $student)
-    {
+        $student = Student::findOrFail($id);
         return view('students.edit', compact('student'));
     }
 
-    // Update the student
-    public function update(Request $request, Student $student)
+    public function update(Request $request, $id)
     {
+        if ($redirect = $this->checkAuth()) return $redirect;
+
         $request->validate([
-            'roll_number' => 'required|unique:students,roll_number,' . $student->id,
-            'name'        => 'required',
-            'email'       => 'nullable|email',
-            'age'         => 'required|integer|min:3|max:100',
-            'bengali'     => 'required|integer|min:0|max:100',
-            'english'     => 'required|integer|min:0|max:100',
-            'math'        => 'required|integer|min:0|max:100',
+            'name' => 'required',
+            'email' => 'required|email',
+            'phone' => 'required',
         ]);
 
+        $student = Student::findOrFail($id);
         $student->update($request->all());
 
-        return redirect()->route('students.index')->with('success', 'Student updated successfully.');
+        return redirect('/students')->with('success', 'Student updated successfully.');
     }
 
-    // Delete the student
-    public function destroy(Student $student)
+    public function destroy($id)
     {
+        if ($redirect = $this->checkAuth()) return $redirect;
+
+        $student = Student::findOrFail($id);
         $student->delete();
-        return redirect()->route('students.index')->with('success', 'Student deleted successfully.');
+
+        return redirect('/students')->with('success', 'Student deleted successfully.');
     }
+
+
+
 }
