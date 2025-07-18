@@ -42,6 +42,20 @@
         </div>
 
         <div class="mb-3">
+            <label for="teacher_id" class="form-label">Assigned Teacher</label>
+                <select name="teacher_id" id="teacher_id" class="form-select">
+                 <option value="">-- Select Teacher --</option>
+             @foreach($teachers as $teacher)
+                 <option value="{{ $teacher->id }}" 
+                    {{ isset($student) && $student->teacher_id == $teacher->id ? 'selected' : '' }}>
+                    {{ $teacher->name }}
+                </option>
+            @endforeach
+             </select>
+        </div>
+
+
+        <div class="mb-3">
             <label for="email" class="form-label">Email (optional):</label>
             <input type="email" name="email" value="{{ old('email', $student->email) }}" class="form-control @error('email') is-invalid @enderror">
             @error('email')

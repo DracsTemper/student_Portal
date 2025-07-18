@@ -1,11 +1,6 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Student List</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-</head>
-<body class="bg-light">
+@extends('layouts.app')
 
+@section('content')
 <div class="container py-5">
     <h1 class="mb-4">Student List</h1>
 
@@ -40,6 +35,7 @@
                     <th>Bengali</th>
                     <th>English</th>
                     <th>Math</th>
+                    <th>Teacher</th>
                     <th>Actions</th>
                 </tr>
             </thead>
@@ -54,6 +50,7 @@
                         <td>{{ $student->bengali }}</td>
                         <td>{{ $student->english }}</td>
                         <td>{{ $student->math }}</td>
+                        <td>{{ $student->teacher ? $student->teacher->name : 'N/A' }}</td>
                         <td>
                             <a href="{{ route('students.show', $student->id) }}" class="btn btn-sm btn-info">View</a>
                             <a href="{{ route('students.edit', $student->id) }}" class="btn btn-sm btn-primary">Edit</a>
@@ -78,6 +75,4 @@
         {{ $students->appends(request()->query())->links() }}
     </div>
 </div>
-
-</body>
-</html>
+@endsection

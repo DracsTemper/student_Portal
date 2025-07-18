@@ -8,7 +8,7 @@ use App\Http\Controllers\TeacherController;
 // Login Routes
 Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login.form');
 Route::post('/login', [LoginController::class, 'login'])->name('login.submit');
-Route::get('/logout', [LoginController::class, 'logout'])->name('logout');
+Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 
 // Redirect root to login
 Route::get('/', function () {

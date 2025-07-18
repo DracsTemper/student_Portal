@@ -15,6 +15,7 @@
             <p><strong>Name:</strong> {{ $student->name }}</p>
             <p><strong>Email:</strong> {{ $student->email ?? '-' }}</p>
             <p><strong>Age:</strong> {{ $student->age }}</p>
+            <p><strong>Teacher:</strong> {{ $student->teacher ? $student->teacher->name : 'N/A' }}</p>
             <hr>
             <h5 class="mt-3">Subject Results:</h5>
             <p><strong>Bengali:</strong> {{ $student->bengali }}</p>

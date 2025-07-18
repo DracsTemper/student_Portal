@@ -13,8 +13,15 @@ class Student extends Model
     'age',
     'bengali',
     'english',
-    'math'
+    'math',
+    'teacher_id'
 ];
+
+public function teacher()
+{
+    return $this->belongsTo(\App\Models\Teacher::class);
+}
+
 
 }
 

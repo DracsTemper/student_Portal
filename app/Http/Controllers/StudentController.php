@@ -16,31 +16,40 @@ class StudentController extends Controller
         return null;
     }
 
-    public function index()
+    public function index(Request $request)
     {
-        //if ($redirect = $this->checkAuth()) return $redirect;
+        if ($redirect = $this->checkAuth()) return $redirect;
 
-       // $students = Student::all();
-       if ($redirect = $this->checkAuth()) return $redirect;
+        $search = $request->input('search');
 
-        $students = Student::paginate(10);
+        $students = Student::with('teacher')
+            ->when($search, function ($query, $search) {
+                $query->where('roll_number', 'like', "%{$search}%")
+                      ->orWhere('name', 'like', "%{$search}%")
+                      ->orWhere('email', 'like', "%{$search}%");
+            })
+            ->orderBy('name')
+            ->paginate(10);
 
         return view('students.index', compact('students'));
-       
-    
     }
+
     public function show($id)
     {
+        if ($redirect = $this->checkAuth()) return $redirect;
+
         $student = Student::findOrFail($id);
         return view('students.show', compact('student'));
     }
-    
+
     public function create()
     {
         if ($redirect = $this->checkAuth()) return $redirect;
 
-        return view('students.create');
+        $teachers = \App\Models\Teacher::all(); // Fetch all teachers
+        return view('students.create', compact('teachers'));
     }
+
 
     public function store(Request $request)
     {
@@ -49,7 +58,7 @@ class StudentController extends Controller
         $request->validate([
             'name' => 'required',
             'email' => 'required|email',
-            'phone' => 'required',
+            'teacher_id' => 'nullable|exists:teachers,id'
         ]);
 
         Student::create($request->all());
@@ -62,8 +71,10 @@ class StudentController extends Controller
         if ($redirect = $this->checkAuth()) return $redirect;
 
         $student = Student::findOrFail($id);
-        return view('students.edit', compact('student'));
+        $teachers = \App\Models\Teacher::all();
+        return view('students.edit', compact('student', 'teachers'));
     }
+
 
     public function update(Request $request, $id)
     {
@@ -72,7 +83,7 @@ class StudentController extends Controller
         $request->validate([
             'name' => 'required',
             'email' => 'required|email',
-            'phone' => 'required',
+            'teacher_id' => 'nullable|exists:teachers,id'
         ]);
 
         $student = Student::findOrFail($id);
@@ -90,7 +101,4 @@ class StudentController extends Controller
 
         return redirect('/students')->with('success', 'Student deleted successfully.');
     }
-
-
-
 }

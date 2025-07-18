@@ -19,4 +19,10 @@ class Teacher extends Model
         'email',
         'subject',
     ];
+
+    public function students()
+{
+    return $this->hasMany(Student::class);
+}
+
 }
